@@ -1,37 +1,30 @@
-name: Laravel
+name: PhpCsFixer
 
 on: push
 
 jobs:
-  php-cs-fixer:
+  php_cs_fixer:
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v2
-    - name: Cache vendor
-      id: cache
-      uses: actions/cache@v1
-      with:
-        path: ./vendor
-        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-composer-
-    - name: Composer install
-      if: steps.cache.outputs.cache-hit != 'true'
-      run: composer install -n --prefer-dist
-    - name: Dry-run php-cs-fixer
-      run: |
-        ./vendor/bin/php-cs-fixer fix --dry-run --diff --diff-format=udiff --using-cache=no . || true
-    - name: Execute php-cs-fixer
-      run: |
-        ./vendor/bin/php-cs-fixer fix --using-cache=no
-    - name: Commit and push
-      uses: stefanzweifel/git-auto-commit-action@v4.2.0
-      with:
-        commit_message: pxp-cs-fixer by Github Actions
-    - name: Run if changes have been detected
-      if: steps.auto-commit-action.outputs.changes_detected == 'true'
-      run: echo "Changes!"
-    - name: Run if no changes have been detected
-      if: steps.auto-commit-action.outputs.changes_detected == 'false'
-      run: echo "No Changes!"
+      - uses: actions/checkout@v2
+      - name: confirm version
+        run: |
+          php -v
+      - name: install php-cs-fixer
+        run: |
+          composer require --dev friendsofphp/php-cs-fixer -n
+          ./vendor/bin/php-cs-fixer --version
+      - name: dry-run php-cs-fixer
+        run: |
+          ./vendor/bin/php-cs-fixer fix --dry-run --diff --diff-format=udiff --using-cache=no . || true
+      - name: execute php-cs-fixer
+        run: |
+          ./vendor/bin/php-cs-fixer fix --using-cache=no
+          git status | grep modified || echo "GIT_STATUS_RESULT=$(echo $?)" >> $GITHUB_ENV
+      - name: commit & push
+        if: ${{ env.GIT_STATUS_RESULT == 0 }}
+        run: |
+          git config --global user.name "Github Actions"
+          git config --global user.email "github_actions@example.com"
+          git commit -a -m "auto code format by Github Actions"
+          git push
