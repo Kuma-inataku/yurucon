@@ -17,9 +17,4 @@ csfix-dry:
 csfix-exec:
 	./tools/php-cs-fixer/vendor/bin/php-cs-fixer fix -v --diff
 
-# git
-.PHONY: git-dev-pull
-git-dev-pull :
-	git pull origin develop
-
 # artisan
