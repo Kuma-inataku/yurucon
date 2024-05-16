@@ -16,8 +16,8 @@ return new class extends Migration
             $table->integer('counselor_id');
             $table->integer('client_id');
             $table->string('content');
-            $table->string('status');
-            $table->string('counseling_at');
+            $table->integer('status');
+            $table->timestamp('counseling_at');
             $table->string('counseling_url');
             $table->string('schedule_url');
             $table->timestamps();

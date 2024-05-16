@@ -13,7 +13,10 @@ return new class extends Migration
     {
         Schema::create('tags', function (Blueprint $table) {
             $table->id();
-            $table->timestamp('created_at')->nullable();
+            $table->string('name');
+            $table->timestamps();
+            // todo: created_atだけにする
+            // $table->timestamp('created_at')->nullable();
         });
     }
 

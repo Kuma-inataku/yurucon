@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer('counselor_id');
             $table->integer('tag_id');
-            $table->timestamps();
+            $table->timestamp('created_at')->nullable();
         });
     }
 
