@@ -23,9 +23,9 @@ class CounselingFactory extends Factory
             'content' => Str::random(30),
             // todo: enum 使う
             'status' => 1,
-            'counseling_at' => now(), 
-            'counseling_url' => Str::random(30).".com", 
-            'schedule_url' => Str::random(40).".com", 
+            'counseling_at' => now(),
+            'counseling_url' => Str::random(30) . ".com",
+            'schedule_url' => Str::random(40) . ".com",
         ];
     }
 }
