@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\CounselingStatus;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -21,8 +22,7 @@ class CounselingFactory extends Factory
             'counselor_id' => random_int(1, 3),
             'client_id' => random_int(1, 3),
             'content' => Str::random(30),
-            // todo: enum 使う
-            'status' => 1,
+            'status' => CounselingStatus::Requesting,
             'counseling_at' => now(),
             'counseling_url' => Str::random(30) . ".com",
             'schedule_url' => Str::random(40) . ".com",
