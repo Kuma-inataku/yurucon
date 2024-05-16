@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\CurrentUserType;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -23,8 +24,7 @@ class UserSeeder extends Seeder
             'email_verified_at' => now(),
             'password' => Hash::make('password'),
             'remember_token' => Str::random(10),
-            // todo: Enumを使う
-            'status' => 1,
+            'status' => CurrentUserType::Counselor,
         ]);
     }
 }

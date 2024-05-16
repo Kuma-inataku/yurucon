@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\CurrentUserType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -28,8 +29,7 @@ class UserFactory extends Factory
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
-            // TODO: Enumを使う
-            'status' => 1,
+            'status' => CurrentUserType::Counselor,
             'remember_token' => Str::random(10),
         ];
     }
