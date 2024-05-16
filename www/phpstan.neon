@@ -1,4 +1,10 @@
 parameters:
     paths:
-        - app/Http
-    level: 1
+        - app
+        - bootstrap
+        - config
+        - database
+        - resources/views
+        - routes
+        - tests
+    level: 5
