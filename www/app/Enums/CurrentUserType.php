@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Enums;
 
@@ -10,6 +12,6 @@ use BenSampo\Enum\Enum;
  */
 final class CurrentUserType extends Enum
 {
-    const Counselor = 0;
-    const Client = 1;
+    public const Counselor = 0;
+    public const Client = 1;
 }
