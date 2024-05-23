@@ -7,6 +7,10 @@ use Illuminate\Support\Facades\Http;
 
 class ZoomSampleController extends Controller
 {
+    public function auth() {
+        // todo: authorize the Zoom API
+        
+    }
     public function create() {
         // todo: create a new meeting
         

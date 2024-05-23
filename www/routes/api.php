@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\SampleApiController;
+use App\Http\Controllers\ZoomSampleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -20,3 +21,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('/sample/guzzle', [SampleApiController::class, 'index']);
+// Zoom API
+Route::get('/zoom/authorize', [ZoomSampleController::class, 'auth']);
+Route::get('/zoom/create', [ZoomSampleController::class, 'create']);
