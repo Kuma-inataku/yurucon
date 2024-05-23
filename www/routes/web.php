@@ -18,6 +18,6 @@ Route::get('/', function () {
 });
 
 // TODO: リリース後は削除
-Route::get('/sample/timerex', function () {
-    return view('timerex-sample');
+Route::get('/sample/api', function () {
+    return view('api-sample');
 });
