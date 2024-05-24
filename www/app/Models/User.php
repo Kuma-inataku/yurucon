@@ -23,6 +23,11 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'status',
+        'zoom_code',
+        'access_token',
+        'refresh_token',
+        'zoom_expires_in',
     ];
 
     /**

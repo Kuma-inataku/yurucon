@@ -23,4 +23,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get('/sample/guzzle', [SampleApiController::class, 'index']);
 // Zoom API
 Route::get('/zoom/authorize', [ZoomSampleController::class, 'auth']);
+Route::get('/zoom/callback', [ZoomSampleController::class, 'callback']);
+Route::get('/zoom/get-user', [ZoomSampleController::class, 'getUser']);
 Route::get('/zoom/create', [ZoomSampleController::class, 'create']);

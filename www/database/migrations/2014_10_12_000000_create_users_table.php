@@ -20,6 +20,12 @@ return new class extends Migration
             $table->integer('status');
             $table->rememberToken();
             $table->timestamps();
+
+            // todo: ZoomAPI検証用カラム。あとで削除
+            $table->longText('zoom_code')->nullable()->default(null);
+            $table->longText('access_token')->nullable()->default(null);
+            $table->longText('refresh_token')->nullable()->default(null);
+            $table->timestamp('zoom_expires_in', 0)->nullable()->default(null);
             // Soft delete
             $table->softDeletes();
         });
