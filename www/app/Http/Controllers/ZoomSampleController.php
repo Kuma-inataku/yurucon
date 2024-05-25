@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\CounselingStatus;
 use App\Enums\CurrentUserType;
+use App\Models\Counseling;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -75,11 +77,11 @@ class ZoomSampleController extends Controller
 
     protected function me()
     {
-        $user = User::findOrFail(6);
+        // todo: Zoom OAuth済みのユーザー取得
+        $user = User::findOrFail(4);
         $client = new \GuzzleHttp\Client([
             'headers' => ['Authorization' => 'Bearer '.$user->access_token]
         ]);
-        dump($user->access_token);
         $res = $client->request('GET','https://api.zoom.us/v2/users/me');
         $result = json_decode($res->getBody()->getContents());
 
@@ -88,15 +90,56 @@ class ZoomSampleController extends Controller
 
     public function getUser()
     {
-        $user = User::findOrFail(6);
+        // todo: Zoom OAuth済みのユーザー取得
+        $user = User::findOrFail(4);
         $zoomUser = $this->me();
         dd($user, $zoomUser);
     }
 
     public function create()
     {
-        // todo: create a new meeting
+        // todo: Zoom OAuth済みのユーザー取得
+        $user = User::findOrFail(4);
+        $zoomUser = $this->me();
 
+        // create zoom Meeting
+        $url = 'https://api.zoom.us/v2/users/'.$zoomUser->id.'/meetings';
+        $client = new \GuzzleHttp\Client([
+            'headers' => [
+                'Authorization' => 'Bearer '.$user->access_token,
+                'Content-Type'=>'application/json'
+            ],
+        ]);
+        
+        // Zoom API アクセス
+        $topic = 'test'.rand(1,2).'様ご相談';
+        $res = $client->request('POST',$url,[
+            \GuzzleHttp\RequestOptions::JSON => [
+                'topic'=>$topic,
+                'type'=>2,
+                'start_time'=>now(),
+            ]
+        ]);
+        $result = json_decode($res->getBody()->getContents());
+
+        // save counseling
+        $counseling = Counseling::create([
+            'counselor_id' => random_int(1, 3),
+            'client_id' => random_int(1, 3),
+            'content' => Str::random(30),
+            'status' => CounselingStatus::Requesting,
+            'counseling_start_at' => $result->start_time,
+            'counseling_term' => random_int(10, 15),
+            'counseling_url' => $result->start_url,
+        ]);
+
+        // view
+        return view('zoom-create-confirm', [
+            'counselingID' => $counseling->id,
+            'counselingZoomID' => $result->id,
+            'time' => $result->start_time,
+            'url' => $counseling->counseling_url,
+        ]);
     }
 
     public function update()
