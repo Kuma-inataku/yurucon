@@ -19,8 +19,8 @@ class Counseling extends Model
         'client_id',
         'content',
         'status',
+        'counseling_term',
         'counseling_url',
-        'schedule_url',
     ];
 
     /**
@@ -29,6 +29,7 @@ class Counseling extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'counseling_at' => 'datetime',
+        'counseling_start_at' => 'datetime',
+        'counseling_end_at' => 'datetime',
     ];
 }
