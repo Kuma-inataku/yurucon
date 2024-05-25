@@ -26,3 +26,4 @@ Route::get('/zoom/authorize', [ZoomSampleController::class, 'auth']);
 Route::get('/zoom/callback', [ZoomSampleController::class, 'callback']);
 Route::get('/zoom/get-user', [ZoomSampleController::class, 'getUser']);
 Route::get('/zoom/create', [ZoomSampleController::class, 'create']);
+Route::get('/zoom/update', [ZoomSampleController::class, 'update']);

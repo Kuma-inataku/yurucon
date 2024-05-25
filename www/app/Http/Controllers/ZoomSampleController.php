@@ -8,8 +8,8 @@ use App\Models\Counseling;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
+use Illuminate\Support\Arr;
 
 /**
  * Class ZoomSampleController
@@ -78,11 +78,11 @@ class ZoomSampleController extends Controller
     protected function me()
     {
         // todo: Zoom OAuth済みのユーザー取得
-        $user = User::findOrFail(4);
+        $user = User::findOrFail(5);
         $client = new \GuzzleHttp\Client([
-            'headers' => ['Authorization' => 'Bearer '.$user->access_token]
+            'headers' => ['Authorization' => 'Bearer ' . $user->access_token]
         ]);
-        $res = $client->request('GET','https://api.zoom.us/v2/users/me');
+        $res = $client->request('GET', 'https://api.zoom.us/v2/users/me');
         $result = json_decode($res->getBody()->getContents());
 
         return $result;
@@ -91,7 +91,7 @@ class ZoomSampleController extends Controller
     public function getUser()
     {
         // todo: Zoom OAuth済みのユーザー取得
-        $user = User::findOrFail(4);
+        $user = User::findOrFail(5);
         $zoomUser = $this->me();
         dd($user, $zoomUser);
     }
@@ -99,25 +99,25 @@ class ZoomSampleController extends Controller
     public function create()
     {
         // todo: Zoom OAuth済みのユーザー取得
-        $user = User::findOrFail(4);
+        $user = User::findOrFail(5);
         $zoomUser = $this->me();
 
         // create zoom Meeting
-        $url = 'https://api.zoom.us/v2/users/'.$zoomUser->id.'/meetings';
+        $url = 'https://api.zoom.us/v2/users/' . $zoomUser->id . '/meetings';
         $client = new \GuzzleHttp\Client([
             'headers' => [
-                'Authorization' => 'Bearer '.$user->access_token,
-                'Content-Type'=>'application/json'
+                'Authorization' => 'Bearer ' . $user->access_token,
+                'Content-Type' => 'application/json'
             ],
         ]);
-        
+
         // Zoom API アクセス
-        $topic = 'test'.rand(1,2).'様ご相談';
-        $res = $client->request('POST',$url,[
+        $topic = 'test' . rand(1, 2) . '様ご相談';
+        $res = $client->request('POST', $url, [
             \GuzzleHttp\RequestOptions::JSON => [
-                'topic'=>$topic,
-                'type'=>2,
-                'start_time'=>now(),
+                'topic' => $topic,
+                'type' => 2,
+                'start_time' => now(),
             ]
         ]);
         $result = json_decode($res->getBody()->getContents());
@@ -134,7 +134,7 @@ class ZoomSampleController extends Controller
         ]);
 
         // view
-        return view('zoom-create-confirm', [
+        return view('sample.api.zoom-create-confirm', [
             'counselingID' => $counseling->id,
             'counselingZoomID' => $result->id,
             'time' => $result->start_time,
@@ -144,8 +144,47 @@ class ZoomSampleController extends Controller
 
     public function update()
     {
-        // todo: update a new meeting
+        // todo: Zoom OAuth済みのユーザー取得
+        $user = User::findOrFail(5);
+        $zoomUser = $this->me();
 
+        // get meetings
+        $url = 'https://api.zoom.us/v2/users/' . $zoomUser->id . '/meetings';
+        $client = new \GuzzleHttp\Client([
+            'headers' => [
+                'Authorization' => 'Bearer ' . $user->access_token,
+                'Content-Type' => 'application/json'
+            ],
+        ]);
+        $res = $client->request('GET', $url);
+        $result = json_decode($res->getBody()->getContents());
+        // pick up first a meeting at random
+        $updateMeeting = Arr::first($result->meetings);
+
+        // update zoom Meeting
+        $updateUrl = 'https://api.zoom.us/v2/meetings/' . $updateMeeting->id;
+        $updateClient = new \GuzzleHttp\Client([
+            'headers' => [
+                'Authorization' => 'Bearer ' . $user->access_token,
+                'Content-Type' => 'application/json'
+            ],
+        ]);
+        // 試験的に1年後に変更
+        $newTime = now()->addYear();
+        $updateResponse = $updateClient->request('PATCH', $updateUrl,[
+            \GuzzleHttp\RequestOptions::JSON => [
+                'start_time' => $newTime,
+            ]
+        ]);
+
+        // view
+        return view('sample.api.zoom-update-confirm', [
+            'MeetingID' => $updateMeeting->id,
+            'oldTime' => $updateMeeting->start_time,
+            'newTime' => $newTime,
+            'url' => $updateMeeting->join_url,
+        ]);
+        
     }
 
     public function delete()
