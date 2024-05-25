@@ -48,7 +48,7 @@ class ZoomSampleController extends Controller
 
         $basic = base64_encode(env('ZOOM_CLIENT_ID') . ':' . env('ZOOM_CLIENT_SECRET'));
         $client = new \GuzzleHttp\Client([
-            'headers' => ['Authorization' => 'Basic ' . $basic]
+            'headers' => ['Authorization' => 'Basic ' . $basic],
         ]);
 
         // request zoom api to get access token
@@ -56,8 +56,8 @@ class ZoomSampleController extends Controller
             'query' => [
                 'grant_type' => 'authorization_code',
                 'code' => $code,
-                'redirect_uri' => env('ZOOM_REDIRECT_URI')
-            ]
+                'redirect_uri' => env('ZOOM_REDIRECT_URI'),
+            ],
         ]);
         $result = json_decode($res->getBody()->getContents());
 
@@ -71,7 +71,7 @@ class ZoomSampleController extends Controller
         // redirect to HOME
         return redirect('/sample/api')->with([
             'noZoomCode' => false,
-            'oauthSuccess' => true
+            'oauthSuccess' => true,
         ]);
     }
 
@@ -80,7 +80,7 @@ class ZoomSampleController extends Controller
         // todo: Zoom OAuth済みのユーザー取得
         $user = User::findOrFail(6);
         $client = new \GuzzleHttp\Client([
-            'headers' => ['Authorization' => 'Bearer ' . $user->access_token]
+            'headers' => ['Authorization' => 'Bearer ' . $user->access_token],
         ]);
         $res = $client->request('GET', 'https://api.zoom.us/v2/users/me');
         $result = json_decode($res->getBody()->getContents());
@@ -107,7 +107,7 @@ class ZoomSampleController extends Controller
         $client = new \GuzzleHttp\Client([
             'headers' => [
                 'Authorization' => 'Bearer ' . $user->access_token,
-                'Content-Type' => 'application/json'
+                'Content-Type' => 'application/json',
             ],
         ]);
 
@@ -118,7 +118,7 @@ class ZoomSampleController extends Controller
                 'topic' => $topic,
                 'type' => 2,
                 'start_time' => now(),
-            ]
+            ],
         ]);
         $result = json_decode($res->getBody()->getContents());
 
@@ -153,7 +153,7 @@ class ZoomSampleController extends Controller
         $client = new \GuzzleHttp\Client([
             'headers' => [
                 'Authorization' => 'Bearer ' . $user->access_token,
-                'Content-Type' => 'application/json'
+                'Content-Type' => 'application/json',
             ],
         ]);
         $res = $client->request('GET', $url);
@@ -166,15 +166,15 @@ class ZoomSampleController extends Controller
         $updateClient = new \GuzzleHttp\Client([
             'headers' => [
                 'Authorization' => 'Bearer ' . $user->access_token,
-                'Content-Type' => 'application/json'
+                'Content-Type' => 'application/json',
             ],
         ]);
         // 試験的に1年後に変更
         $newTime = now()->addYear();
-        $updateClient->request('PATCH', $updateUrl,[
+        $updateClient->request('PATCH', $updateUrl, [
             \GuzzleHttp\RequestOptions::JSON => [
                 'start_time' => $newTime,
-            ]
+            ],
         ]);
 
         // view
@@ -184,7 +184,7 @@ class ZoomSampleController extends Controller
             'newTime' => $newTime,
             'url' => $updateMeeting->join_url,
         ]);
-        
+
     }
 
     public function delete()
@@ -197,11 +197,11 @@ class ZoomSampleController extends Controller
         $from = now()->format('Y-m-d');
         $to = now()->addCentury()->format('Y-m-d');
         // NOTE: 現在以降のMeeting取得にはfromに加えてto, timezone が必要
-        $url = 'https://api.zoom.us/v2/users/' . $zoomUser->id . '/meetings?from='.$from.'&to='.$to.'&timezone=Asia/Tokyo';
+        $url = 'https://api.zoom.us/v2/users/' . $zoomUser->id . '/meetings?from=' . $from . '&to=' . $to . '&timezone=Asia/Tokyo';
         $client = new \GuzzleHttp\Client([
             'headers' => [
                 'Authorization' => 'Bearer ' . $user->access_token,
-                'Content-Type' => 'application/json'
+                'Content-Type' => 'application/json',
             ],
         ]);
         $res = $client->request('GET', $url);
@@ -215,11 +215,11 @@ class ZoomSampleController extends Controller
         $deleteClient = new \GuzzleHttp\Client([
             'headers' => [
                 'Authorization' => 'Bearer ' . $user->access_token,
-                'Content-Type' => 'application/json'
+                'Content-Type' => 'application/json',
             ],
         ]);
         $deleteClient->request('DELETE', $deleteUrl);
-        
+
         // view
         return view('sample.api.zoom-delete-confirm', [
             'deletedMeetingID' => $deleteMeeting->id,
