@@ -19,6 +19,14 @@ use Illuminate\Support\Arr;
  */
 class ZoomSampleController extends Controller
 {
+    public function index()
+    {
+        // Zoom MT取得
+
+        // view
+        return view('sample.api.zoom-index');
+    }
+
     public function auth()
     {
         $zoomOAuthLink = 'https://zoom.us/oauth/authorize?' . http_build_query([
