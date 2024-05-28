@@ -18,3 +18,7 @@ csfix-exec:
 	./tools/php-cs-fixer/vendor/bin/php-cs-fixer fix -v --diff
 
 # artisan
+.PHONY: db-fresh
+db-fresh:
+	php artisan migrate:fresh --seed
+
