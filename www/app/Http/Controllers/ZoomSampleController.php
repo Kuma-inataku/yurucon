@@ -19,9 +19,11 @@ use Illuminate\Support\Arr;
  */
 class ZoomSampleController extends Controller
 {
+    private $ZoomUserID = 4;
+
     public function index()
     {
-        $user = User::findOrFail(4);
+        $user = User::findOrFail($this->ZoomUserID);
         $zoomUser = $this->me();
 
         // Zoom MT取得
@@ -100,23 +102,10 @@ class ZoomSampleController extends Controller
         ]);
     }
 
-    protected function me()
-    {
-        // Zoom OAuth済みのユーザー取得
-        $user = User::findOrFail(4);
-        $client = new \GuzzleHttp\Client([
-            'headers' => ['Authorization' => 'Bearer ' . $user->access_token],
-        ]);
-        $res = $client->request('GET', 'https://api.zoom.us/v2/users/me');
-        $result = json_decode($res->getBody()->getContents());
-
-        return $result;
-    }
-
     public function getUser()
     {
         // Zoom OAuth済みのユーザー取得
-        $user = User::findOrFail(4);
+        $user = User::findOrFail($this->ZoomUserID);
         $zoomUser = $this->me();
         dd($user, $zoomUser);
     }
@@ -124,7 +113,7 @@ class ZoomSampleController extends Controller
     public function create()
     {
         // Zoom OAuth済みのユーザー取得
-        $user = User::findOrFail(4);
+        $user = User::findOrFail($this->ZoomUserID);
         $zoomUser = $this->me();
 
         // create zoom Meeting
@@ -170,7 +159,7 @@ class ZoomSampleController extends Controller
     public function update()
     {
         // Zoom OAuth済みのユーザー取得
-        $user = User::findOrFail(4);
+        $user = User::findOrFail($this->ZoomUserID);
         $zoomUser = $this->me();
 
         // get meetings
@@ -215,7 +204,7 @@ class ZoomSampleController extends Controller
     public function delete()
     {
         // Zoom OAuth済みのユーザー取得
-        $user = User::findOrFail(4);
+        $user = User::findOrFail($this->ZoomUserID);
         $zoomUser = $this->me();
 
         // get meetings
@@ -250,6 +239,50 @@ class ZoomSampleController extends Controller
             'deletedMeetingID' => $deleteMeeting->id,
             'previousMeetingCount' => count($result->meetings),
         ]);
+    }
 
+    protected function me()
+    {
+        // Zoom OAuth済みのユーザー取得
+        $checkRefresh = $this->checkRefresh();
+        if(! $checkRefresh){
+            throw new \Exception("Refresh Token Error!!!");
+        }
+        $user = User::findOrFail($this->ZoomUserID);
+        $client = new \GuzzleHttp\Client([
+            'headers' => ['Authorization' => 'Bearer ' . $user->access_token],
+        ]);
+        $res = $client->request('GET', 'https://api.zoom.us/v2/users/me');
+        $result = json_decode($res->getBody()->getContents());
+
+        return $result;
+    }
+
+    protected function checkRefresh(){
+        $user = User::findOrFail($this->ZoomUserID);
+        $token_expires =  new \DateTime($user->zoom_expires_in);
+        $now = new \DateTime();
+    
+        if($now >= $token_expires){
+            $basic = base64_encode(env('ZOOM_CLIENT_ID').':'.env('ZOOM_CLIENT_SECRET'));
+            $client = new \GuzzleHttp\Client([
+                'headers' => ['Authorization' => 'Basic '.$basic]
+            ]);
+            $res = $client->request('POST','https://zoom.us/oauth/token',[
+                'query' => [
+                    'grant_type'=>'refresh_token',
+                    'refresh_token'=>$user->refresh_token
+                ]
+            ]);
+            $result = json_decode($res->getBody()->getContents());
+    
+            $user->access_token= $result->access_token;
+            $user->refresh_token= $result->refresh_token;
+            $unixTime = time();
+            $user->zoom_expires_in= date("Y-m-d H:i:s",$unixTime+$result->expires_in);
+            $user->save();
+            return true;
+        }
+        return false;
     }
 }
