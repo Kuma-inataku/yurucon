@@ -2,18 +2,14 @@
 <html>
     <body>
         <h1>ZoomMT一覧</h1>
-            {{-- todo: ZoomMT一覧表示 --}}
+            @foreach ($meetings as $meeting)
             <ul>
-                <li class="text-gray-900 dark:text-white">開始時間：</li>
-                <li class="text-gray-900 dark:text-white">終了：</li>
-                <li class="text-gray-900 dark:text-white">URL：</li>
+                <li class="text-gray-900 dark:text-white">MT名：{{ $meeting->topic }}</li>
+                <li class="text-gray-900 dark:text-white">開始時間 ：{{ $meeting->start_time }}</li>
+                <li class="text-gray-900 dark:text-white">MT時間：{{ $meeting->duration }}</li>
+                <li class="text-gray-900 dark:text-white"><a href="{{ $meeting->join_url }}">URL</a></li>
             </ul>
             <hr>
-            <ul>
-                <li class="text-gray-900 dark:text-white"z>開始時間：</li>
-                <li class="text-gray-900 dark:text-white"z>終了：</li>
-                <li class="text-gray-900 dark:text-white"z>URL：</li>
-            </ul>
-            <hr>
+            @endforeach
     </body>
 </html>

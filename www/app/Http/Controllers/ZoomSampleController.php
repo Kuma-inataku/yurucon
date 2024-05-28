@@ -21,10 +21,27 @@ class ZoomSampleController extends Controller
 {
     public function index()
     {
+        $user = User::findOrFail(4);
+        $zoomUser = $this->me();
+
         // Zoom MT取得
+        $from = now()->format('Y-m-d');
+        $to = now()->addCentury()->format('Y-m-d');
+        // NOTE: 現在以降のMeeting取得にはfromに加えてto, timezone が必要
+        $url = 'https://api.zoom.us/v2/users/' . $zoomUser->id . '/meetings?from=' . $from . '&to=' . $to . '&timezone=Asia/Tokyo';
+        $client = new \GuzzleHttp\Client([
+            'headers' => [
+                'Authorization' => 'Bearer ' . $user->access_token,
+                'Content-Type' => 'application/json',
+            ],
+        ]);
+        $res = $client->request('GET', $url);
+        $result = json_decode($res->getBody()->getContents());
 
         // view
-        return view('sample.api.zoom-index');
+        return view('sample.api.zoom-index', [
+            'meetings' => $result->meetings,
+        ]);
     }
 
     public function auth()
@@ -85,8 +102,8 @@ class ZoomSampleController extends Controller
 
     protected function me()
     {
-        // todo: Zoom OAuth済みのユーザー取得
-        $user = User::findOrFail(6);
+        // Zoom OAuth済みのユーザー取得
+        $user = User::findOrFail(4);
         $client = new \GuzzleHttp\Client([
             'headers' => ['Authorization' => 'Bearer ' . $user->access_token],
         ]);
@@ -98,16 +115,16 @@ class ZoomSampleController extends Controller
 
     public function getUser()
     {
-        // todo: Zoom OAuth済みのユーザー取得
-        $user = User::findOrFail(6);
+        // Zoom OAuth済みのユーザー取得
+        $user = User::findOrFail(4);
         $zoomUser = $this->me();
         dd($user, $zoomUser);
     }
 
     public function create()
     {
-        // todo: Zoom OAuth済みのユーザー取得
-        $user = User::findOrFail(6);
+        // Zoom OAuth済みのユーザー取得
+        $user = User::findOrFail(4);
         $zoomUser = $this->me();
 
         // create zoom Meeting
@@ -152,8 +169,8 @@ class ZoomSampleController extends Controller
 
     public function update()
     {
-        // todo: Zoom OAuth済みのユーザー取得
-        $user = User::findOrFail(6);
+        // Zoom OAuth済みのユーザー取得
+        $user = User::findOrFail(4);
         $zoomUser = $this->me();
 
         // get meetings
@@ -197,8 +214,8 @@ class ZoomSampleController extends Controller
 
     public function delete()
     {
-        // todo: Zoom OAuth済みのユーザー取得
-        $user = User::findOrFail(6);
+        // Zoom OAuth済みのユーザー取得
+        $user = User::findOrFail(4);
         $zoomUser = $this->me();
 
         // get meetings
