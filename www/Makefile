@@ -13,12 +13,12 @@ stan:
 csfix-dry:
 	./tools/php-cs-fixer/vendor/bin/php-cs-fixer fix -v --diff --dry-run
 
-.PHONY: csfix-exec
-csfix-exec:
+.PHONY: csfix
+csfix:
 	./tools/php-cs-fixer/vendor/bin/php-cs-fixer fix -v --diff
 
 # artisan
-.PHONY: db-fresh
-db-fresh:
+.PHONY: fresh
+fresh:
 	php artisan migrate:fresh --seed
 

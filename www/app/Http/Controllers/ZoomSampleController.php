@@ -245,7 +245,7 @@ class ZoomSampleController extends Controller
     {
         // Zoom OAuth済みのユーザー取得
         $checkRefresh = $this->checkRefresh();
-        if(! $checkRefresh){
+        if(! $checkRefresh) {
             throw new \Exception("Refresh Token Error!!!");
         }
         $user = User::findOrFail($this->ZoomUserID);
@@ -258,28 +258,29 @@ class ZoomSampleController extends Controller
         return $result;
     }
 
-    protected function checkRefresh(){
+    protected function checkRefresh()
+    {
         $user = User::findOrFail($this->ZoomUserID);
         $token_expires =  new \DateTime($user->zoom_expires_in);
         $now = new \DateTime();
-    
-        if($now >= $token_expires){
-            $basic = base64_encode(env('ZOOM_CLIENT_ID').':'.env('ZOOM_CLIENT_SECRET'));
+
+        if($now >= $token_expires) {
+            $basic = base64_encode(env('ZOOM_CLIENT_ID') . ':' . env('ZOOM_CLIENT_SECRET'));
             $client = new \GuzzleHttp\Client([
-                'headers' => ['Authorization' => 'Basic '.$basic]
+                'headers' => ['Authorization' => 'Basic ' . $basic],
             ]);
-            $res = $client->request('POST','https://zoom.us/oauth/token',[
+            $res = $client->request('POST', 'https://zoom.us/oauth/token', [
                 'query' => [
-                    'grant_type'=>'refresh_token',
-                    'refresh_token'=>$user->refresh_token
-                ]
+                    'grant_type' => 'refresh_token',
+                    'refresh_token' => $user->refresh_token,
+                ],
             ]);
             $result = json_decode($res->getBody()->getContents());
-    
-            $user->access_token= $result->access_token;
-            $user->refresh_token= $result->refresh_token;
+
+            $user->access_token = $result->access_token;
+            $user->refresh_token = $result->refresh_token;
             $unixTime = time();
-            $user->zoom_expires_in= date("Y-m-d H:i:s",$unixTime+$result->expires_in);
+            $user->zoom_expires_in = date("Y-m-d H:i:s", $unixTime + $result->expires_in);
             $user->save();
             return true;
         }
