@@ -19,3 +19,4 @@ yarn-error.log
 /.vscode
 .php-cs-fixer.cache
 /docker/mysql/storage
+/storage/json
