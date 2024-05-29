@@ -16,3 +16,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+// TODO: リリース後は削除
+Route::get('/sample/api', function () {
+    return view('api-sample');
+});

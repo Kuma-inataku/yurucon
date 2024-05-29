@@ -17,11 +17,12 @@ return new class extends Migration
             $table->integer('client_id');
             $table->string('content');
             $table->integer('status');
-            $table->timestamp('counseling_at');
-            $table->string('counseling_url');
-            $table->string('schedule_url');
+            $table->timestamp('counseling_start_at');
+            // TODO: add column
+            // $table->timestamp('counseling_end_at');
+            $table->integer('counseling_term');
+            $table->longText('counseling_url');
             $table->timestamps();
-            // Soft delete
             $table->softDeletes();
         });
     }

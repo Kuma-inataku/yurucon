@@ -12,6 +12,6 @@ use BenSampo\Enum\Enum;
  */
 final class CurrentUserType extends Enum
 {
-    public const Counselor = 0;
-    public const Client = 1;
+    public const Counselor = 1;
+    public const Client = 2;
 }

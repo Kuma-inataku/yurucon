@@ -23,9 +23,11 @@ class CounselingFactory extends Factory
             'client_id' => random_int(1, 3),
             'content' => Str::random(30),
             'status' => CounselingStatus::Requesting,
-            'counseling_at' => now(),
+            'counseling_start_at' => now(),
+            // TODO: add column
+            // 'counseling_end_at' => now(),
+            'counseling_term' => random_int(10, 15),
             'counseling_url' => Str::random(30) . ".com",
-            'schedule_url' => Str::random(40) . ".com",
         ];
     }
 }
