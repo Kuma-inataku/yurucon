@@ -25,7 +25,8 @@ class SampleGoogleCloudController extends Controller
         );
 
         // view
-        return redirect()->route('sample.google-cloud.index')->with('message', 'test.txtをアップロードしました');
+        return redirect()->route('sample.google-cloud.index')
+            ->with('message', 'test.txtをアップロードしました');
     }
 
     public function uploadDisplay()
@@ -52,7 +53,8 @@ class SampleGoogleCloudController extends Controller
         );
 
         // view
-        return redirect()->route('sample.google-cloud.upload-display')->with('message', 'アップロードしました');
+        return redirect()->route('sample.google-cloud.upload-display')
+            ->with('message', 'アップロードしました');
     }
 
     public function show()
@@ -89,6 +91,7 @@ class SampleGoogleCloudController extends Controller
         $object = $bucket->object('test.txt');
         $object->delete();
 
-        return redirect()->route('sample.google-cloud.index')->with('message', '画像削除しました');
+        return redirect()->route('sample.google-cloud.index')
+            ->with('message', '画像削除しました');
     }
 }
