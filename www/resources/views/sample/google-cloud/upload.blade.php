@@ -10,7 +10,7 @@
             <div>
                 <form action="/sample/gc-storage/upload" method="post" enctype="multipart/form-data">
                     @csrf
-                    <input type="file" name="file">
+                    <input type="file" name="gcs-file">
                     <button type="submit">Upload</button>
                 </form>
             </div>
