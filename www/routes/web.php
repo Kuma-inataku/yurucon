@@ -21,4 +21,6 @@ Route::get('/', function () {
 Route::get('/sample/api', function () {
     return view('api-sample');
 });
-Route::get('/sample/gc-storage', [App\Http\Controllers\SampleGoogleCloudController::class, 'index']);
+
+Route::get('/sample/gc-storage/index', [App\Http\Controllers\SampleGoogleCloudController::class, 'index'])->name('sample.google-cloud.index');
+Route::get('/sample/gc-storage/upload-test', [App\Http\Controllers\SampleGoogleCloudController::class, 'uploadTest'])->name('sample.google-cloud.upload-test');
