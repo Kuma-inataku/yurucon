@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Google\Cloud\Storage\StorageClient;
 use Illuminate\Http\Request;
+
 // use Illuminate\Support\Facades\Storage;
 
 class SampleGoogleCloudController extends Controller
@@ -73,7 +74,7 @@ class SampleGoogleCloudController extends Controller
         $imgUrl = $object->signedUrl(now()->addMinutes(5));
 
         return view('sample.google-cloud.show', [
-            'imgUrl' => $imgUrl
+            'imgUrl' => $imgUrl,
         ]);
     }
 
