@@ -83,9 +83,12 @@ class SampleGoogleCloudController extends Controller
 
     public function delete()
     {
-        // todo: GCS内の画像データ削除
+        // GCS内の画像データ削除
+        $client = new StorageClient();
+        $bucket = $client->bucket(env('GCS_BUCKET_NAME'));
+        $object = $bucket->object('test.txt');
+        $object->delete();
 
-        // view
         return redirect()->route('sample.google-cloud.index')->with('message', '画像削除しました');
     }
 }
