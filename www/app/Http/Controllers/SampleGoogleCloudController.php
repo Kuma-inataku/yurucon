@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Google\Cloud\Storage\StorageClient;
 use Illuminate\Http\Request;
+// use Illuminate\Support\Facades\Storage;
 
 class SampleGoogleCloudController extends Controller
 {
@@ -56,10 +57,28 @@ class SampleGoogleCloudController extends Controller
 
     public function show()
     {
-        // todo: GCSから画像テストデータ取得
+        $client = new StorageClient();
+        $bucket = $client->bucket(env('GCS_BUCKET_NAME'));
+
+        return view('sample.google-cloud.show', [
+            'objects' => $bucket->objects()
+        ]);
+
+
+        // NOTE: 本番環境では通用しないので却下　
+        // $client = new StorageClient();
+        // $bucket = $client->bucket(env('GCS_BUCKET_NAME'));
+        // $imgName = 'lCkvG1TbFwoqITCTxamIRNBGKR7UU28oeY7gYHOe.png';
+        // $object = $bucket->object($imgName);
+        // $object->downloadToFile(storage_path('app/public/img/test.png'));
 
         // view
-        return view('sample.google-cloud.show');
+        // return view('sample.google-cloud.show', [
+        //     'objects' => $bucket->objects()
+        // ]);
+        // return view('sample.google-cloud.show', [
+        //     'objects' => $bucket->objects()
+        // ]);
     }
 
     public function delete()
