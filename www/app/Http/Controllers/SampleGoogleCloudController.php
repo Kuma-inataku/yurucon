@@ -57,30 +57,24 @@ class SampleGoogleCloudController extends Controller
             ->with('message', 'アップロードしました');
     }
 
+    /**
+     * GCS内の画像データを表示
+     * NOTE: 公式Docの「ストリーミングダウンロード」を見ても一度ファイルへダウンロードをする必要があるらしいのでこれに沿って実装
+     * @see https://cloud.google.com/storage/docs/streaming-downloads?hl=ja#stream_a_download
+     */
     public function show()
     {
         $client = new StorageClient();
         $bucket = $client->bucket(env('GCS_BUCKET_NAME'));
+        $imgName = 'lCkvG1TbFwoqITCTxamIRNBGKR7UU28oeY7gYHOe.png';
+        $object = $bucket->object($imgName);
+        $object->downloadToFile(storage_path('app/public/img/test.png'));
+
+        $imgUrl = $object->signedUrl(now()->addMinutes(5));
 
         return view('sample.google-cloud.show', [
-            'objects' => $bucket->objects()
+            'imgUrl' => $imgUrl
         ]);
-
-
-        // NOTE: 本番環境では通用しないので却下　
-        // $client = new StorageClient();
-        // $bucket = $client->bucket(env('GCS_BUCKET_NAME'));
-        // $imgName = 'lCkvG1TbFwoqITCTxamIRNBGKR7UU28oeY7gYHOe.png';
-        // $object = $bucket->object($imgName);
-        // $object->downloadToFile(storage_path('app/public/img/test.png'));
-
-        // view
-        // return view('sample.google-cloud.show', [
-        //     'objects' => $bucket->objects()
-        // ]);
-        // return view('sample.google-cloud.show', [
-        //     'objects' => $bucket->objects()
-        // ]);
     }
 
     public function delete()
