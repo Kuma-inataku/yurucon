@@ -50,8 +50,8 @@ class ZoomSampleController extends Controller
     {
         $zoomOAuthLink = 'https://zoom.us/oauth/authorize?' . http_build_query([
             'response_type' => 'code',
-            'redirect_uri' => env('ZOOM_REDIRECT_URI'),
-            'client_id' => env('ZOOM_CLIENT_ID'),
+            'redirect_uri' => config('app.zoom-redirect-uri'),
+            'client_id' => config('app.zoom-client-id'),
         ]);
 
         return redirect($zoomOAuthLink);
@@ -73,7 +73,7 @@ class ZoomSampleController extends Controller
         $user->zoom_code = $code;
         $user->save();
 
-        $basic = base64_encode(env('ZOOM_CLIENT_ID') . ':' . env('ZOOM_CLIENT_SECRET'));
+        $basic = base64_encode(config('app.zoom-client-id') . ':' . config('app.zoom-client-secret'));
         $client = new \GuzzleHttp\Client([
             'headers' => ['Authorization' => 'Basic ' . $basic],
         ]);
@@ -83,7 +83,7 @@ class ZoomSampleController extends Controller
             'query' => [
                 'grant_type' => 'authorization_code',
                 'code' => $code,
-                'redirect_uri' => env('ZOOM_REDIRECT_URI'),
+                'redirect_uri' => config('app.zoom-redirect-uri'),
             ],
         ]);
         $result = json_decode($res->getBody()->getContents());
@@ -265,7 +265,7 @@ class ZoomSampleController extends Controller
         $now = new \DateTime();
 
         if($now >= $token_expires) {
-            $basic = base64_encode(env('ZOOM_CLIENT_ID') . ':' . env('ZOOM_CLIENT_SECRET'));
+            $basic = base64_encode(config('app.zoom-client-id') . ':' . config('app.zoom-client-secret'));
             $client = new \GuzzleHttp\Client([
                 'headers' => ['Authorization' => 'Basic ' . $basic],
             ]);
